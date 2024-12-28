@@ -60,10 +60,13 @@ const App = () => {
           ? formatDate(row["التاريخ"])
           : row["التاريخ"] || "N/A"
       }`;
-      const phone = `رقم التليفون: 0${String(row["رقم التليفون"] || "N/A")}`;
+      const phone1 = `رقم التليفون : 0${String(row["رقم التليفون"] || "N/A")}`;
+      const phone2 = row["رقم التليفون 2"]
+        ? `رقم التليفون : 0${String(row["رقم التليفون 2"])}`
+        : null;
       const address = `العنوان: ${row["العنوان"] || "N/A"}`;
       const requiredText = `المطلوب: ${row["المطلوب"] || "N/A"}`;
-      const amount = `${row["المبلغ"] || "N/A"}`;
+      const amount = `${row["المبلغ"] || "0"}`;
       const contact = `التواصل: ${row["التواصل"] || "N/A"}`;
       const notes = `ملاحظات: ${row["ملاحظات"] || "N/A"}`;
   
@@ -74,7 +77,7 @@ const App = () => {
   
       // Calculate the dynamic height of the box based on content
       const boxHeight =
-        lineHeight * 8 +
+        lineHeight * (phone2 ? 9 : 8) + // Add extra line for second phone number if present
         lineHeight * addressLines.length +
         lineHeight * notesLines.length +
         lineHeight * requiredLines.length +
@@ -109,11 +112,19 @@ const App = () => {
       });
       textOffset += lineHeight;
   
-      // Add phone
-      doc.text(phone, pageWidth - margin - padding, textOffset, {
+      // Add phone 1
+      doc.text(phone1, pageWidth - margin - padding, textOffset, {
         align: "right",
       });
       textOffset += lineHeight;
+  
+      // Add phone 2 if available
+      if (phone2) {
+        doc.text(phone2, pageWidth - margin - padding, textOffset, {
+          align: "right",
+        });
+        textOffset += lineHeight;
+      }
   
       // Add address
       addressLines.forEach((line) => {
