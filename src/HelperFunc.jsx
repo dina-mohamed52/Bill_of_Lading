@@ -50,12 +50,11 @@ export const generatePDF = (data) => {
     const notes = `ملاحظات: ${row["ملاحظات"] || "N/A"}`;
     const orderStatus = `${row["حالة الاوردر"] || "N/A"}`;
 
-
     if (requiredText.length > 150) {
-        doc.setFontSize(8);
-      } else {
-        doc.setFontSize(10);
-      }
+      doc.setFontSize(8);
+    } else {
+      doc.setFontSize(10);
+    }
 
     const addressLines = doc.splitTextToSize(address, maxLineWidth);
     const requiredMaxWidth = contentWidth - 100; // narrower width for required text (you can adjust 100)
@@ -68,45 +67,54 @@ export const generatePDF = (data) => {
     doc.roundedRect(margin, yOffset, contentWidth, fixedBoxHeight, 5, 5);
 
     // Add logo
-    doc.addImage(
-      logo,
-      "jpeg",
-      margin + 5,
-      yOffset + 5,
-      logoWidth,
-      logoHeight
-    );
+    doc.addImage(logo, "jpeg", margin + 5, yOffset + 5, logoWidth, logoHeight);
 
     let textOffset = yOffset + 5;
     const padding = 5;
 
-    doc.setFontSize(10);
-    doc.text(date, pageWidth - margin - padding, textOffset, { align: "right" });
+    doc.setFontSize(14);
+    doc.text(date, pageWidth - margin - padding, textOffset, {
+      align: "right",
+    });
     textOffset += lineHeight;
 
-    doc.text(name, pageWidth - margin - padding, textOffset, { align: "right" });
+    doc.text(name, pageWidth - margin - padding, textOffset, {
+      align: "right",
+    });
     textOffset += lineHeight;
 
     doc.setFontSize(14); // Bigger font for phone numbers
-    doc.text(phone1, pageWidth - margin - padding, textOffset, { align: "right" });
+    doc.text(phone1, pageWidth - margin - padding, textOffset, {
+      align: "right",
+    });
     textOffset += lineHeight;
 
     if (phone2) {
-      doc.text(phone2, pageWidth - margin - padding, textOffset, { align: "right" });
+      doc.text(phone2, pageWidth - margin - padding, textOffset, {
+        align: "right",
+      });
       textOffset += lineHeight;
     }
 
     doc.setFontSize(10); // Reset font size
 
+    doc.setFontSize(14); // Bigger font for address
     addressLines.forEach((line) => {
-      doc.text(line, pageWidth - margin - padding, textOffset, { align: "right" });
+      doc.text(line, pageWidth - margin - padding, textOffset, {
+        align: "right",
+      });
       textOffset += lineHeight;
     });
+
+    // After address, reset font size back to 10
+    doc.setFontSize(10);
 
     textOffset += lineHeight; // small gap
 
     requiredLines.forEach((line) => {
-      doc.text(line, pageWidth - margin - padding, textOffset, { align: "right" });
+      doc.text(line, pageWidth - margin - padding, textOffset, {
+        align: "right",
+      });
       textOffset += lineHeight;
     });
 
@@ -116,7 +124,9 @@ export const generatePDF = (data) => {
     // textOffset += lineHeight;
 
     notesLines.forEach((line) => {
-      doc.text(line, pageWidth - margin - padding, textOffset, { align: "right" });
+      doc.text(line, pageWidth - margin - padding, textOffset, {
+        align: "right",
+      });
       textOffset += lineHeight;
     });
 
@@ -129,9 +139,13 @@ export const generatePDF = (data) => {
     doc.roundedRect(statusX, statusY, statusWidth, statusHeight, 5, 5, "FD");
 
     doc.setFontSize(12);
-    doc.text("حالة الطلب", statusX + statusWidth / 2, statusY + 6, { align: "center" });
+    doc.text("حالة الطلب", statusX + statusWidth / 2, statusY + 6, {
+      align: "center",
+    });
     doc.setFontSize(10);
-    doc.text(orderStatus, statusX + statusWidth / 2, statusY + 13, { align: "center" });
+    doc.text(orderStatus, statusX + statusWidth / 2, statusY + 13, {
+      align: "center",
+    });
 
     // Draw Amount container
     const amountX = margin + 5;
@@ -142,9 +156,13 @@ export const generatePDF = (data) => {
     doc.roundedRect(amountX, amountY, amountWidth, amountHeight, 5, 5, "FD");
 
     doc.setFontSize(12);
-    doc.text("المبلغ", amountX + amountWidth / 2, amountY + 6, { align: "center" });
+    doc.text("المبلغ", amountX + amountWidth / 2, amountY + 6, {
+      align: "center",
+    });
     doc.setFontSize(10);
-    doc.text(amount, amountX + amountWidth / 2, amountY + 13, { align: "center" });
+    doc.text(amount, amountX + amountWidth / 2, amountY + 13, {
+      align: "center",
+    });
 
     yOffset += fixedBoxHeight + margin; // Move to next bill
   });
