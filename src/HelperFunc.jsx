@@ -58,7 +58,8 @@ export const generatePDF = (data) => {
       }
 
     const addressLines = doc.splitTextToSize(address, maxLineWidth);
-    const requiredLines = doc.splitTextToSize(requiredText, maxLineWidth);
+    const requiredMaxWidth = contentWidth - 100; // narrower width for required text (you can adjust 100)
+    const requiredLines = doc.splitTextToSize(requiredText, requiredMaxWidth);
     const notesLines = doc.splitTextToSize(notes, maxLineWidth);
 
     // Draw outer box

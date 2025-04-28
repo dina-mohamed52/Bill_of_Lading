@@ -4,9 +4,6 @@ import jsPDF from "jspdf";
 import "jspdf-autotable";
 import { Upload, Button, Typography, Layout } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
-import amiriFont from "./assets/constants"; // Make sure this is correct
-import logo from "./assets/Logo.jpeg";
-import { Card, Divider } from "antd";
 import { generatePDF } from "./HelperFunc";
 const { Title, Text } = Typography;
 
