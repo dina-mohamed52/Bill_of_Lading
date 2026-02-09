@@ -33,22 +33,23 @@ export const generatePDF = (data) => {
       yOffset = margin;
     }
 
-    const name = `الاسم : ${row["الاسم"] || "N/A"}`;
+    const name = `الاسم : ${row["الاسم"] || ""}`;
     const date = `التاريخ: ${
       row["التاريخ"] && !isNaN(row["التاريخ"])
         ? formatDate(row["التاريخ"])
         : row["التاريخ"] || "N/A"
     }`;
-    const phone1 = `رقم التليفون : 0${String(row["رقم التليفون"] || "N/A")}`;
-    const phone2 = row["رقم التليفون 2"]
-      ? `رقم التليفون : 0${String(row["رقم التليفون 2"])}`
+    const phone1 = `رقم التليفون : 0${String(row["التليفون"] || "")}`;
+    const phone2 = row["التليفون 2"]
+      ? `رقم التليفون: 0${String(row["التليفون 2"])}`
       : null;
-    const address = `العنوان: ${row["العنوان"] || "N/A"}`;
-    const requiredText = `المطلوب: ${row["المطلوب"] || "N/A"}`;
+    const address = `العنوان: ${row["العنوان"] || ""}`;
+    const requiredText = `المطلوب:\n${row["الاوردر"] || ""}`;
+
     const amount = `${row["المبلغ"] || "0"}`;
     // const contact = `التواصل: ${row["التواصل"] || "N/A"}`;
-    const notes = `ملاحظات: ${row["ملاحظات"] || "N/A"}`;
-    const orderStatus = `${row["حالة الاوردر"] || "N/A"}`;
+    const notes = `ملاحظات: ${row["ملاحظات"] || ""}`;
+    const orderStatus = `${row["حالة الاوردر"] || ""}`;
 
     if (requiredText.length > 150) {
       doc.setFontSize(8);
@@ -57,7 +58,7 @@ export const generatePDF = (data) => {
     }
 
     const addressLines = doc.splitTextToSize(address, maxLineWidth);
-    const requiredMaxWidth = contentWidth - 100; // narrower width for required text (you can adjust 100)
+    const requiredMaxWidth = contentWidth - 70; // narrower width for required text
     const requiredLines = doc.splitTextToSize(requiredText, requiredMaxWidth);
     const notesLines = doc.splitTextToSize(notes, maxLineWidth);
 
@@ -89,12 +90,12 @@ export const generatePDF = (data) => {
     });
     textOffset += lineHeight;
 
-    if (phone2) {
-      doc.text(phone2, pageWidth - margin - padding, textOffset, {
-        align: "right",
-      });
-      textOffset += lineHeight;
-    }
+    if (row["التليفون 2"]) {
+  doc.text(`رقم التليفون: 0${row["التليفون 2"]}`, pageWidth - margin - padding, textOffset, {
+    align: "right",
+  });
+  textOffset += lineHeight;
+}
 
     doc.setFontSize(10); // Reset font size
 
@@ -111,10 +112,21 @@ export const generatePDF = (data) => {
 
     textOffset += lineHeight; // small gap
 
+    const toArabicNumbers = (str) => {
+      return str.replace(/\d/g, (d) => "٠١٢٣٤٥٦٧٨٩"[d]);
+    };
+
     requiredLines.forEach((line) => {
-      doc.text(line, pageWidth - margin - padding, textOffset, {
-        align: "right",
-      });
+      const lineWithArabicNumbers = toArabicNumbers(line); // حوّل الأرقام لكل سطر
+      doc.text(
+        lineWithArabicNumbers,
+        pageWidth - margin - padding,
+        textOffset,
+        {
+          align: "right",
+          rtl: true,
+        },
+      );
       textOffset += lineHeight;
     });
 
